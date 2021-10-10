@@ -71,7 +71,7 @@ const categories = [
 	},
 ];
 
-export default function Home() {
+export function Home() {
 	return (
 		<main className={styles['home-view']}>
 			<Categories categories={categories} />
