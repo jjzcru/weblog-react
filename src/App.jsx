@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { AppContext } from './services/AppContext';
 import ReloadPrompt from './ReloadPrompt';
 
-import Main, {SelectedCategory, SelectedPost} from './pages/main';
+import {Home, SelectedCategory, SelectedPost} from './pages/main';
 
 export class App extends Component {
 	state = {};
@@ -21,7 +21,7 @@ export class App extends Component {
 				<main className={styles['app']}>
 					<Router>
 						<Switch>
-							<Route exact path="/" component={Main} />
+							<Route exact path="/" component={Home} />
 							<Route exact path="/categories/:categoryId" component={SelectedCategory} />
 							<Route exact path="/categories/:categoryId/:postId" component={SelectedPost} />
 						</Switch>
