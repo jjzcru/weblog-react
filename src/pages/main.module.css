@@ -14,8 +14,6 @@
 	border-right: 1px solid #c4c4c4;
 }
 
-
-
 .categories header {
 	height: 52px;
 	width: 100%;
@@ -75,7 +73,8 @@
 
 /*Posts view*/
 
-.posts-view, .post-view {
+.posts-view,
+.post-view {
 	display: grid;
 	grid-auto-columns: 1fr;
 	grid-template-columns: 0.8fr 0.8fr 1.4fr;
@@ -181,7 +180,8 @@
 	border-bottom: 1px solid #c4c4c4;
 }
 
-.post h2, .post p {
+.post h2,
+.post p {
 	margin: 0;
 }
 
@@ -235,7 +235,6 @@
 	gap: 0px 0px;
 	grid-template-areas: '. .';
 	border-bottom: 1px solid #c4c4c4;
-	
 }
 
 .comments li > * {
@@ -260,9 +259,6 @@
 	border-radius: 50%;
 }
 
-
-
-
 /*Empty container*/
 
 .empty {
@@ -277,7 +273,8 @@
 }
 
 /*RESET LINKS STILING*/
-.categories a, .posts a {
+.categories a,
+.posts a {
 	text-decoration: none;
 	color: inherit;
 	width: 100%;
