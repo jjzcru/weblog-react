@@ -39,7 +39,7 @@ export function SelectedCategory() {
 			.then((categories) => {
 				let category = categories.filter(c => `${c.id}` === `${categoryId}`);
 				if(!category.length) {
-					window.location.href = '/categories';
+					// window.location.href = '/categories';
 					return;
 				}
 				category = category[0];
@@ -79,7 +79,7 @@ export function SelectedPost() {
 			.then((categories) => {
 				let category = categories.filter(c => `${c.id}` === `${categoryId}`);
 				if(!category.length) {
-					window.location.href = '/categories';
+					// window.location.href = '/categories';
 					return;
 				}
 				category = category[0];
@@ -90,8 +90,8 @@ export function SelectedPost() {
 			.then((posts) => {
 				let post = posts.filter(p => `${p.id}` === `${postId}`);
 				if(!post.length) {
-					window.location.href = `/categories`;
-					return;
+					// window.location.href = `/categories`;
+					// return;
 				}
 				post = post[0];
 				setPost(post);
