@@ -52,6 +52,13 @@
 	padding-inline-start: 0px;
 	overflow: hidden;
 	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	background: unset;
+}
+
+.categories li a:hover {
+	background-color: unset;
 }
 
 .categories li {
@@ -126,6 +133,10 @@
 	padding-inline-start: 0px;
 	overflow: hidden;
 	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	background: unset;
+	
 }
 
 .posts li {
@@ -279,7 +290,15 @@
 	color: inherit;
 	width: 100%;
 	height: 100%;
+	padding: unset;
+	text-align: unset;
 }
+
+.categories a:hover,
+.posts a:hover {
+	background-color: unset;
+}
+
 
 .categories a {
 	display: flex;
