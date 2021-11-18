@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styles from './main.module.css';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 const categories = [
 	{
@@ -149,6 +152,15 @@ function Categories({ img, username, categories }) {
 
 function Posts({ category }) {
 	const { id, name, posts } = category;
+	const [isNewPostOpen, setIsNewPostOpen] = React.useState(false);
+  
+	function createPost() {
+		setIsNewPostOpen(true);
+	}
+  
+	function closeNewPost() {
+		setIsNewPostOpen(false);
+	}
 
 	let component = (
 		<ul>
@@ -180,6 +192,24 @@ function Posts({ category }) {
 					<button>X</button>
 				</div>
 			</header>
+			<div>
+				<button onClick={createPost} className={styles['post-button']}>New Post</button>
+				<Modal isOpen={isNewPostOpen}
+					onRequestClose={closeNewPost}
+					className={styles['new-post-modal']}
+					contentLabel="New Post Modal">
+					<h2>Add new post to the {name} category</h2>
+					<form>
+						<input type="text" className={styles['post-title']} placeholder={'Title'} />
+						<br /><br />
+						<textarea placeholder={'Write new blog post...'} className={styles['post-textarea']} />
+						<br />
+						<br />
+						<button onClick={closeNewPost} className={styles['post-button']}>Post</button>
+					</form>
+					<button onClick={closeNewPost} className={styles['cancel-button']}>Cancel</button>
+				</Modal>
+			</div>
 			{component}
 		</section>
 	);
@@ -195,6 +225,16 @@ function EmptyPosts() {
 
 function Post({ post }) {
 	const { title, description, comments } = post;
+	const [isEditPostOpen, setIsEditPostOpen] = React.useState(false);
+  
+	function editPost() {
+		setIsEditPostOpen(true);
+	}
+  
+	function closeEditPost() {
+		setIsEditPostOpen(false);
+	}
+
 	return (
 		<section className={styles['post']}>
 			<header>
@@ -202,6 +242,26 @@ function Post({ post }) {
 			</header>
 			<section>
 				<h2>{title}</h2>
+				<div>
+					<button onClick={editPost} className={styles['edit-button']}>Edit Post</button>
+					<Modal isOpen={isEditPostOpen}
+						onRequestClose={closeEditPost}
+						className={styles['new-post-modal']}
+						contentLabel="New Post Modal">
+						<h2>Editing "{title}"</h2>
+						<form>
+							<input type="text" className={styles['post-title']} value={title} />
+							<br /><br />
+							<textarea placeholder={'Write new blog post...'} className={styles['post-textarea']}>
+								{description}
+							</textarea>
+							<br />
+							<br />
+							<button onClick={closeEditPost} className={styles['post-button']}>Save</button>
+						</form>
+						<button onClick={closeEditPost} className={styles['cancel-button']}>Cancel</button>
+					</Modal>
+				</div>
 				<p>{description}</p>
 				<form>
 					<textarea placeholder={'Comment'} />
