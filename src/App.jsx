@@ -7,14 +7,43 @@ import ReloadPrompt from './ReloadPrompt';
 import { Main, SelectedCategory, SelectedPost } from './pages/main';
 import { Home } from './pages/home';
 import { SignIn, SignUp } from './pages/auth';
+import { Api } from './services/Api';
+
+const host = 'https://weblog-next.vercel.app/api';
 
 export class App extends Component {
-	state = {};
-	componentDidMount() {}
+	state = {
+		api: new Api(host),
+		me: null,
+	};
+	componentDidMount() {
+		const { api } = this.state;
+		if (localStorage.getItem('token')) {
+			api.setToken(localStorage.getItem('token'));
+			this.getMe(api)
+				.then((me) => {
+					this.setState({ me });
+				})
+				.then(() => {
+					console.log(`Load successfully`);
+				})
+				.catch(console.error);
+		}
+	}
+
+	getMe = async (api) => {
+		return await api.getMe();
+	};
 
 	render() {
+		const { api, me } = this.state;
 		return (
-			<AppContext.Provider value={{}}>
+			<AppContext.Provider
+				value={{
+					api,
+					me,
+				}}
+			>
 				<main className={styles['app']}>
 					<Router>
 						<Switch>
