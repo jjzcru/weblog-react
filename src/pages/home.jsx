@@ -11,7 +11,7 @@ export function Home() {
                 <ul>
                     <span className={styles["weblog-nav"]}>We<span className={styles.bold}>Blog</span></span>
                     <li><Link to="/" className={styles["button-link"]}>Home</Link></li>
-                    <li><Link to="/login" className={styles["button-link"]}>Log In</Link></li>
+                    <li><Link to="/signin" className={styles["button-link"]}>Log In</Link></li>
                     <li><Link to="/signup" className={styles["button-link"]}>Sign Up</Link></li>
                     <li><Link to="/categories" className={styles["button-link"]}>Categories</Link></li>
                 </ul>
