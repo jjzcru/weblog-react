@@ -6,7 +6,7 @@ import ReloadPrompt from './ReloadPrompt';
 
 import { Main, SelectedCategory, SelectedPost } from './pages/main';
 import { Home } from './pages/home';
-import { SignIn } from './pages/auth';
+import { SignIn, SignUp } from './pages/auth';
 import { Api } from './services/Api';
 
 const host = 'https://weblog-next.vercel.app/api';
@@ -14,30 +14,37 @@ const host = 'https://weblog-next.vercel.app/api';
 export class App extends Component {
 	state = {
 		api: new Api(host),
+		me: null,
 		isAuthenticated: false,
 	};
-
 	componentDidMount() {
 		const { api } = this.state;
 		if (localStorage.getItem('token')) {
 			api.setToken(localStorage.getItem('token'));
-			this.setState({ api, isAuthenticated: true });
+			this.setState({ isAuthenticated: true });
+			this.getMe(api)
+				.then((me) => {
+					this.setState({ me });
+				})
+				.then(() => {
+					console.log(`Load successfully`);
+				})
+				.catch(console.error);
 		}
 	}
 
-	validateToken = () => {
-		if (!localStorage.getItem('token')) {
-			window.location = '/signin';
-		}
+	getMe = async (api) => {
+		return await api.getMe();
 	};
 
 	render() {
-		const { isAuthenticated, api } = this.state;
+		const { api, me, isAuthenticated } = this.state;
 		return (
 			<AppContext.Provider
 				value={{
-					isAuthenticated,
-					api
+					api,
+					me,
+					isAuthenticated
 				}}
 			>
 				<main className={styles['app']}>
@@ -45,6 +52,7 @@ export class App extends Component {
 						<Switch>
 							<Route exact path="/" component={Home} />
 							<Route exact path="/signin" component={SignIn} />
+							<Route exact path="/signup" component={SignUp} />
 							<Route exact path="/categories" component={Main} />
 							<Route
 								exact
