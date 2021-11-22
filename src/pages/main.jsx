@@ -1,77 +1,21 @@
-import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useParams, Redirect } from 'react-router-dom';
+import { AppContext } from '../services/AppContext';
 import styles from './main.module.css';
 
-const categories = [
-	{
-		name: 'Category 1',
-		id: 1,
-		posts: [
-			{
-				id: 1,
-				title: 'Title 1',
-				description: 'Description',
-				comments: [
-					{
-						id: 1,
-						userId: 1,
-						userImg: '',
-						content: 'Random comment',
-					},
-					{
-						id: 2,
-						userId: 1,
-						userImg: '',
-						content: 'Random comment 2',
-					},
-					{
-						id: 3,
-						userId: 1,
-						userImg: '',
-						content: 'Random comment 3',
-					},
-				],
-			},
-			{
-				id: 2,
-				title: 'Title 2',
-				description: 'Description',
-			},
-		],
-	},
-	{
-		name: 'Category 2',
-		id: 2,
-		posts: [],
-	},
-	{
-		name: 'Category 3',
-		id: 3,
-		posts: [
-			{
-				id: 1,
-				title: 'Title 3',
-				description: 'Description',
-			},
-			{
-				id: 2,
-				title: 'Title 4',
-				description: 'Description',
-			},
-			{
-				id: 3,
-				title: 'Title 5',
-				description: 'Description',
-			},
-			{
-				title: 'Title 6',
-				description: 'Description',
-			},
-		],
-	},
-];
-
-export function Home() {
+export function Main() {
+	const { api, isAuthenticated } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	if (!isAuthenticated) {
+		return <Redirect to="/signin" />;
+	}
+	useEffect(() => {
+		api.getCategories()
+			.then((categories) => {
+				setCategories(categories);
+			})
+			.catch((e) => alert(e.message));
+	}, []);
 	return (
 		<main className={styles['home-view']}>
 			<Categories categories={categories} />
@@ -81,46 +25,86 @@ export function Home() {
 }
 
 export function SelectedCategory() {
+	const { isAuthenticated, api } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	const [category, setCategory] = useState(null);
+	const [posts, setPosts] = useState([]);
 	const { categoryId } = useParams();
-	let category = null;
-	for (const c of categories) {
-		if (`${c.id}` === `${categoryId}`) {
-			category = c;
-			break;
-		}
+
+	if (!isAuthenticated) {
+		return <Redirect to="/signin" />;
 	}
+	useEffect(() => {
+		api.getCategories()
+			.then((categories) => {
+				let category = categories.filter(c => `${c.id}` === `${categoryId}`);
+				if(!category.length) {
+					// window.location.href = '/categories';
+					return;
+				}
+				category = category[0];
+				setCategory(category);
+				setCategories(categories);
+				return api.getPostsByCategory({categoryId})
+			})
+			.then((posts) => {
+				setPosts(posts);
+			})
+			.catch((e) => alert(e.message));
+	}, [categoryId]);
+
+
+	
 	return (
 		<main className={styles['posts-view']}>
 			<Categories categories={categories} />
-			<Posts category={category} />
+			{category ? <Posts category={category} posts={posts} /> : null}
 			<Empty message={'Please select a post'} />
 		</main>
 	);
 }
 
 export function SelectedPost() {
+	const { isAuthenticated, api } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	const [category, setCategory] = useState(null);
+	const [posts, setPosts] = useState([]);
+	const [post, setPost] = useState(null);
 	const { categoryId, postId } = useParams();
-	let category = null;
-	for (const c of categories) {
-		if (`${c.id}` === `${categoryId}`) {
-			category = c;
-			break;
-		}
+	if (!isAuthenticated) {
+		return <Redirect to="/signin" />;
 	}
-
-	let post = null;
-	for (const p of category.posts) {
-		if (`${p.id}` === `${postId}`) {
-			post = p;
-			break;
-		}
-	}
+	useEffect(() => {
+		api.getCategories()
+			.then((categories) => {
+				let category = categories.filter(c => `${c.id}` === `${categoryId}`);
+				if(!category.length) {
+					// window.location.href = '/categories';
+					return;
+				}
+				category = category[0];
+				setCategory(category);
+				setCategories(categories);
+				return api.getPostsByCategory({categoryId})
+			})
+			.then((posts) => {
+				let post = posts.filter(p => `${p.id}` === `${postId}`);
+				if(!post.length) {
+					// window.location.href = `/categories`;
+					// return;
+				}
+				post = post[0];
+				setPost(post);
+				setPosts(posts);
+			})
+			.catch((e) => alert(e.message));
+	}, [categoryId]);
 
 	return (
 		<main className={styles['post-view']}>
 			<Categories categories={categories} />
-			<Posts category={category} />
-			<Post post={post} />
+			{category ? <Posts category={category} posts={posts} /> : null}
+			{post ? <Post post={post} /> : null}
 		</main>
 	);
 }
@@ -147,8 +131,8 @@ function Categories({ img, username, categories }) {
 	);
 }
 
-function Posts({ category }) {
-	const { id, name, posts } = category;
+function Posts({ category, posts }) {
+	const { id, name } = category;
 
 	let component = (
 		<ul>
@@ -208,18 +192,19 @@ function Post({ post }) {
 				</form>
 			</section>
 			<ul className={styles['comments']}>
-				{comments && comments.length ? comments.map((comment, i) => {
-					const { content, id, userImg } = comment;
-					return (
-						<li key={i}>
-							<div>
-								<img />
-							</div>
-							<span>{content}</span>
-						</li>
-					);
-				}) : null}
-				
+				{comments && comments.length
+					? comments.map((comment, i) => {
+							const { content, id, userImg } = comment;
+							return (
+								<li key={i}>
+									<div>
+										<img />
+									</div>
+									<span>{content}</span>
+								</li>
+							);
+					  })
+					: null}
 			</ul>
 		</section>
 	);
