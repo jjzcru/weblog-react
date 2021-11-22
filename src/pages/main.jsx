@@ -7,18 +7,6 @@ import { AppContext } from '../services/AppContext';
 Modal.setAppElement('#root');
 
 export function Main() {
-	const { api, isAuthenticated } = useContext(AppContext);
-	const [categories, setCategories] = useState([]);
-	if (!isAuthenticated) {
-		return <Redirect to="/signin" />;
-	}
-	useEffect(() => {
-		api.getCategories()
-			.then((categories) => {
-				setCategories(categories);
-			})
-			.catch((e) => alert(e.message));
-	}, []);
 	return (
 		<main className={styles['home-view']}>
 			<Categories />
@@ -28,13 +16,9 @@ export function Main() {
 }
 
 export function SelectedCategory() {
-	const { isAuthenticated, api } = useContext(AppContext);
-	const [categories, setCategories] = useState([]);
-	const [category, setCategory] = useState(null);
-	const [posts, setPosts] = useState([]);
-	const { categoryId } = useParams();
 	const { api } = useContext(AppContext);
 	const [category, setCategory] = useState(null);
+	const { categoryId } = useParams();
 
 	useEffect(() => {
 		api.getCategories()
@@ -427,7 +411,7 @@ function Post() {
 }
 
 function EditPost({ post, isOpen, onClose, onComplete }) {
-	const {api} = useContext(AppContext);
+	const { api } = useContext(AppContext);
 	const [title, setTitle] = useState(post.title);
 	const [content, setContent] = useState(post.content);
 	const onSubmit = (e) => {
