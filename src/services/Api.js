@@ -151,6 +151,29 @@ export class Api {
 		}
 	};
 
+	updatePost = async ({ id, title, description, content  }) => {
+		const url = `${this.host}/posts/${id}`;
+		const body = {
+			title,
+			description,
+			content,
+		};
+		try {
+			const { data } = await axios.put(url, body, {
+				headers: {
+					authorization: `Bearer ${this.token}`,
+				},
+			});
+			return data.id;
+		} catch (e) {
+			if (e.response?.data?.message) {
+				throw new Error(e.response?.data.message);
+			}
+
+			throw new Error(e.message);
+		}
+	};
+
     getPost = async (id) => {
         const url = `${this.host}/posts/${id}`;
 		try {

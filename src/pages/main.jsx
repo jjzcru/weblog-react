@@ -79,13 +79,15 @@ function Categories() {
 				<div>
 					<img />
 				</div>
-				<div>{me.name}</div>
+				<div>{me?.name}</div>
 				<div>
-					<button onClick={()=> {
-						localStorage.removeItem('token');
-						localStorage.removeItem('expiredAt');
-						window.location.href = '/';
-					}}>
+					<button
+						onClick={() => {
+							localStorage.removeItem('token');
+							localStorage.removeItem('expiredAt');
+							window.location.href = '/';
+						}}
+					>
 						Log out
 					</button>
 				</div>
@@ -315,7 +317,7 @@ function Post() {
 
 	let editButton = null;
 	let deleteButton = null;
-	if (me.id === user?.id) {
+	if (me && user && me?.id === user?.id) {
 		editButton = (
 			<button onClick={onClickEditPost} className={styles['edit-button']}>
 				Edit
@@ -395,16 +397,33 @@ function Post() {
 				onClose={() => {
 					setIsEditPostOpen(false);
 				}}
+				onComplete={() => {
+					api.getPost(postId)
+						.then((post) => {
+							setPost(post);
+							setIsEditPostOpen(false);
+						})
+						.catch(alert);
+				}}
 			/>
 		</>
 	);
 }
 
-function EditPost({ post, isOpen, onClose }) {
+function EditPost({ post, isOpen, onClose, onComplete }) {
+	const {api} = useContext(AppContext);
 	const [title, setTitle] = useState(post.title);
 	const [content, setContent] = useState(post.content);
 	const onSubmit = (e) => {
 		e.preventDefault();
+		api.updatePost({
+			id: post.id,
+			title,
+			description: '',
+			content,
+		})
+			.then(onComplete)
+			.catch(alert);
 	};
 	return (
 		<Modal
