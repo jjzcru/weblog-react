@@ -20,11 +20,17 @@
 	background: #000;
 	display: grid;
 	grid-auto-columns: 1fr;
-	grid-template-columns: 0.5fr 1.5fr;
+	grid-template-columns: 100px 1fr 100px;
 	grid-template-rows: 1fr;
 	gap: 0px 0px;
-	grid-template-areas: '. .';
+	grid-template-areas: '. . .';
 	color: #fff;
+}
+
+.categories header > :nth-child(2) {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .categories header > :first-child {
@@ -136,7 +142,6 @@
 	display: flex;
 	flex-direction: column;
 	background: unset;
-	
 }
 
 .posts li {
@@ -179,11 +184,27 @@
 .post header {
 	height: 52px;
 	width: 100%;
+	color: #000;
+	border-bottom: 1px solid #c4c4c4;
+	display: grid;
+	grid-auto-columns: 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 1fr;
+	gap: 0px 0px;
+	grid-template-areas: '. . .';
+}
+
+.post header > :nth-child(2) {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: #000;
-	border-bottom: 1px solid #c4c4c4;
+}
+
+.post header > :last-child {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	padding-right: 20px;
 }
 
 .post section {
@@ -196,12 +217,13 @@
 	margin: 0;
 }
 
+
 .post section > * {
 	width: 90%;
 	max-width: 700px;
 }
 
-.post h2 {
+.post h2, .post div {
 	margin: 0px auto;
 	padding: 10px 0px;
 }
@@ -220,31 +242,25 @@
 	width: 90%;
 }
 
-.post textarea {
-	width: 100%;
-	min-height: 140px;
-	border-radius: 12px;
-	border: 1px solid #c4c4c4;
-	margin: 50px 0px;
-	padding: 10px 10px;
-}
-
 .comments {
 	margin: 0;
 	padding-inline-start: 0px;
 	overflow: hidden;
 	overflow-y: auto;
+	background: #fafafa;
+	height: 100%;
 }
 
 .comments li {
 	min-height: 64px;
 	width: 100%;
 	display: grid;
+	background: #fff;
 	grid-auto-columns: 1fr;
-	grid-template-columns: 100px 1fr;
+	grid-template-columns: 90px 1fr 120px;
 	grid-template-rows: 1fr;
 	gap: 0px 0px;
-	grid-template-areas: '. .';
+	grid-template-areas: '. . .';
 	border-bottom: 1px solid #c4c4c4;
 }
 
@@ -317,7 +333,6 @@
 	background: #9d1535;
 }
 
-
 .categories a {
 	display: flex;
 	align-items: center;
@@ -361,42 +376,88 @@
 }
 
 .post-button {
-    background-color: #9D1535;
-    color: white;
-    margin-left: auto;
-    margin-right: auto;
+	background-color: #9d1535;
+	color: white;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .cancel-button {
 	background-color: lightgray;
 	color: black;
-    margin-left: auto;
-    margin-right: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-.edit-button {
-	background-color: #9D1535;
-    color: white;
-    margin-left: 30px;
+.edit-button{
+	border: 1px solid rgb(212, 28, 71);
+	background: rgb(212, 28, 71);
+	color: #fff;
+	border-radius: 8px;
+	padding: 4px 10px;
+	transition: background ease-out 220ms;
 }
 
-.post-button, .cancel-button, .edit-button {
-    border-radius: 10px;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: block;
-    font-size: 20px;
+.edit-button:hover {
+	border: 1px solid #9d1535;
+	background: #9d1535;
+}
+
+.post-button,
+.cancel-button{
+	border-radius: 10px;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: block;
+	font-size: 20px;
 	font-weight: bold;
-    transition-duration: 0.4s;
-    cursor: pointer;
+	transition-duration: 0.4s;
+	cursor: pointer;
 	margin-top: 1px;
 	margin-bottom: 1px;
-    outline-style: none;
-    border-style: none;
+	outline-style: none;
+	border-style: none;
 }
 
-.post-button:hover, .cancel-button:hover, .edit-button:hover {
-    background-color: black;
+.post-button:hover,
+.cancel-button:hover,
+.edit-button:hover {
+	background-color: black;
 	color: white;
+}
+
+.comment-container {
+	width: 100%;
+	min-height: 140px;
+	margin: 50px 0px;
+	
+}
+
+.comment-container textarea {
+	min-height: 140px;
+	width: 100%;
+	border-radius: 12px;
+	padding: 10px 10px;
+	border: 1px solid #c4c4c4;
+}
+
+.comment-container div {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.comment-container button {
+	border: 1px solid rgb(212, 28, 71);
+	background: rgb(212, 28, 71);
+	color: #fff;
+	border-radius: 8px;
+	padding: 4px 10px;
+	transition: background ease-out 220ms;
+}
+
+.comment-container button:hover {
+	border: 1px solid #9d1535;
+	background: #9d1535;
 }
