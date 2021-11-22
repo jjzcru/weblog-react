@@ -151,8 +151,31 @@ export class Api {
 		}
 	};
 
-    getPost = async (id) => {
-        const url = `${this.host}/posts/${id}`;
+	updatePost = async ({ id, title, description, content }) => {
+		const url = `${this.host}/posts/${id}`;
+		const body = {
+			title,
+			description,
+			content,
+		};
+		try {
+			const { data } = await axios.put(url, body, {
+				headers: {
+					authorization: `Bearer ${this.token}`,
+				},
+			});
+			return data.id;
+		} catch (e) {
+			if (e.response?.data?.message) {
+				throw new Error(e.response?.data.message);
+			}
+
+			throw new Error(e.message);
+		}
+	};
+
+	getPost = async (id) => {
+		const url = `${this.host}/posts/${id}`;
 		try {
 			const { data } = await axios.get(url, {
 				headers: {
@@ -169,14 +192,14 @@ export class Api {
 
 			throw new Error(e.message);
 		}
-    }
+	};
 
-    deletePost = async (id) => {
-        const url = `${this.host}/posts/${id}`;
+	deletePost = async (id) => {
+		const url = `${this.host}/posts/${id}`;
 		try {
 			const { data } = await axios.delete(url, {
 				headers: {
-					authorization: `Bearer ${this.token}`
+					authorization: `Bearer ${this.token}`,
 				},
 			});
 			const { id } = data;
@@ -188,9 +211,9 @@ export class Api {
 
 			throw new Error(e.message);
 		}
-    }
+	};
 
-    addComment = async ({ postId, content }) => {
+	addComment = async ({ postId, content }) => {
 		const url = `${this.host}/comments`;
 		const body = {
 			postId,
@@ -212,12 +235,12 @@ export class Api {
 		}
 	};
 
-    deleteComment = async (id) => {
-        const url = `${this.host}/comments/${id}`;
+	deleteComment = async (id) => {
+		const url = `${this.host}/comments/${id}`;
 		try {
 			const { data } = await axios.delete(url, {
 				headers: {
-					authorization: `Bearer ${this.token}`
+					authorization: `Bearer ${this.token}`,
 				},
 			});
 			const { id } = data;
@@ -229,7 +252,5 @@ export class Api {
 
 			throw new Error(e.message);
 		}
-    }
-
-
+	};
 }

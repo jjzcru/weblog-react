@@ -15,11 +15,13 @@ export class App extends Component {
 	state = {
 		api: new Api(host),
 		me: null,
+		isAuthenticated: false,
 	};
 	componentDidMount() {
 		const { api } = this.state;
 		if (localStorage.getItem('token')) {
 			api.setToken(localStorage.getItem('token'));
+			this.setState({ isAuthenticated: true });
 			this.getMe(api)
 				.then((me) => {
 					this.setState({ me });
@@ -36,12 +38,13 @@ export class App extends Component {
 	};
 
 	render() {
-		const { api, me } = this.state;
+		const { api, me, isAuthenticated } = this.state;
 		return (
 			<AppContext.Provider
 				value={{
 					api,
 					me,
+					isAuthenticated
 				}}
 			>
 				<main className={styles['app']}>
