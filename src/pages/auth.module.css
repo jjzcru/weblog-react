@@ -10,12 +10,12 @@
 	grid-template-rows: 1fr;
 	gap: 0px 0px;
 	grid-template-areas: '. .';
+	overflow: auto;
 }
 
 .view .gradient {
 	height: 100%;
 	width: 100%;
-	overflow: hidden;
 	background: linear-gradient(-45deg, #00ff68, #23a6d5, #00ffe9, #23d5ab);
 	background-size: 400% 400%;
 }

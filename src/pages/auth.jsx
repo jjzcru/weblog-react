@@ -79,6 +79,13 @@ export function SignIn() {
 }
 
 export function SignUp() {
+	const [showPassword, setShowPassword] = useState(false);
+
+	const viewPassword = (event) => {
+		event.preventDefault();
+		setShowPassword(!showPassword);
+	};
+
 	return (
 		<div className={styles['view']}>
 			<form>
@@ -87,7 +94,10 @@ export function SignUp() {
 				</picture>
 				<section>
 					<input placeholder="Email" type="email" />
-					<input placeholder="Password" type="password" />
+					<input placeholder="First Name" type="text" />
+					<input placeholder="Last Name" type="text" />
+					<input placeholder="Password" type={showPassword ? "text" : "password"} />
+					<button onClick={viewPassword}>Show Password</button>
 					<p>
 						Have an account? <Link to={'/signin'}>Sign In</Link>
 					</p>
