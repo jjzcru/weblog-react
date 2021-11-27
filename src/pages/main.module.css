@@ -19,16 +19,16 @@
 	background: none;
 }
 
-.categories button div{
+.categories button div {
 	width: 24px;
 	height: 24px;
 	mask-size: cover;
-	
+
 	background-color: #fafafa;
-    transition: background-color ease-out 220ms;
+	transition: background-color ease-out 220ms;
 }
 
-.categories button div{
+.categories button div {
 	mask-image: url('/assets/icons/log-out.svg');
 	-webkit-mask-image: url('/assets/icons/log-out.svg');
 }
@@ -36,7 +36,7 @@
 .categories header {
 	height: 52px;
 	width: 100%;
-	background: #39353C;
+	background: #39353c;
 	display: grid;
 	grid-auto-columns: 1fr;
 	grid-template-columns: 1fr 100px;
@@ -76,7 +76,7 @@
 	display: flex;
 	padding-top: 8px;
 	background: #565158;
-	color: #CCCBCD;
+	color: #cccbcd;
 	flex-direction: column;
 }
 
@@ -90,17 +90,17 @@
 	transition: color ease-out 220ms;
 }
 
-.categories li a{
+.categories li a {
 	padding: 6px 16px;
 	border-radius: 8px;
 	transition: background ease-out 220ms;
 }
 
-.categories li a:hover{
-	background: #6D6970;
+.categories li a:hover {
+	background: #6d6970;
 }
 
-.categories li.selected a{
+.categories li.selected a {
 	background: rgb(212, 28, 71, 0.8);
 	color: #fff;
 }
@@ -135,7 +135,7 @@
 	grid-auto-columns: 1fr;
 	grid-template-columns: 10px 1fr 10px;
 	grid-template-rows: 1fr;
-	background: #39353C;
+	background: #39353c;
 	gap: 0px 0px;
 	grid-template-areas: '. . .';
 	color: #fff;
@@ -171,38 +171,48 @@
 }
 
 .posts li {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	cursor: pointer;
 	list-style-type: none;
+	overflow: hidden;
 	margin: 0;
-	padding-left: 20px;
-	min-height: 64px;
-	display: flex;
-	color: #c4c4c4;
+	height: 80px;
+	max-height: 80px;
+	color: #3d3d3d;
 	align-items: center;
 	border-bottom: 1px solid #c4c4c4;
 	transition: color ease-out 220ms;
-	padding: 20px;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
+	padding: 14px;
+	position: relative;
+	
+}
+
+.posts li.selected a {
+	color: rgb(212, 28, 71);
 }
 
 .posts li h3 {
 	margin: 0;
-	margin-bottom: 8px;
 }
 
 .posts li p {
-	text-overflow: ellipsis;
-	overflow: hidden;
+	margin-top: 10px;
+	font-size: 0.8rem;
 	display: -webkit-box !important;
-	-webkit-line-clamp: 4;
+	display: -webkit-box;
+	-webkit-line-clamp: 1; /* number of lines to show */
+	line-clamp: 1;
 	-webkit-box-orient: vertical;
-	white-space: normal;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	overflow: hidden;
+	bottom: 0;
 }
 
 .posts li:hover {
-	color: #3d3d3d;
+	color: rgb(212, 28, 71, 0.7);
 }
 
 .posts button {
@@ -210,20 +220,21 @@
 	background: none;
 }
 
-.posts button div{
+.posts button div {
 	width: 24px;
 	height: 24px;
 	mask-size: cover;
-	
+
 	background-color: #fafafa;
-    transition: background-color ease-out 220ms;
+	transition: background-color ease-out 220ms;
 }
 
-.posts button:hover div, .posts button:focus div {
+.posts button:hover div,
+.posts button:focus div {
 	background-color: rgb(212, 28, 71);
 }
 
-.posts button div{
+.posts button div {
 	mask-image: url('/assets/icons/file-plus.svg');
 	-webkit-mask-image: url('/assets/icons/file-plus.svg');
 }
@@ -233,7 +244,8 @@
 .post header {
 	height: 52px;
 	width: 100%;
-	color: #000;
+	background: #39353c;
+	color: #fff;
 	border-bottom: 1px solid #c4c4c4;
 	display: grid;
 	grid-auto-columns: 1fr;
@@ -251,9 +263,10 @@
 
 .post header > :last-child {
 	display: flex;
+	width: 100%;
 	align-items: center;
 	justify-content: flex-end;
-	padding-right: 20px;
+	padding-right: 40px;
 }
 
 .post section {
@@ -266,13 +279,13 @@
 	margin: 0;
 }
 
-
 .post section > * {
 	width: 90%;
 	max-width: 700px;
 }
 
-.post h2, .post div {
+.post h2,
+.post div {
 	margin: 0px auto;
 	padding: 10px 0px;
 }
@@ -291,6 +304,38 @@
 	width: 90%;
 }
 
+.post button {
+	border: none;
+	background: none;
+}
+
+.post button div {
+	width: 24px;
+	height: 24px;
+	mask-size: cover;
+	background-color: #fff;
+	transition: background-color ease-out 220ms;
+}
+
+.post button:hover div,
+.post button:focus div {
+	background-color: rgb(212, 28, 71);
+}
+
+.post button:last-of-type {
+	margin-left: 20px;
+} 
+
+.post button.edit div {
+	mask-image: url('/assets/icons/edit.svg');
+	-webkit-mask-image: url('/assets/icons/edit.svg');
+}
+
+.post button.delete div {
+	mask-image: url('/assets/icons/trash-2.svg');
+	-webkit-mask-image: url('/assets/icons/trash-2.svg');
+}
+
 .comments {
 	margin: 0;
 	padding-inline-start: 0px;
@@ -303,14 +348,20 @@
 .comments li {
 	min-height: 64px;
 	width: 100%;
-	display: grid;
 	background: #fff;
+	display: grid;
 	grid-auto-columns: 1fr;
-	grid-template-columns: 90px 1fr 120px;
-	grid-template-rows: 1fr;
+	grid-template-columns: 1fr 100px; 
+	grid-template-rows: 1fr 1fr; 
 	gap: 0px 0px;
-	grid-template-areas: '. . .';
+	grid-template-areas: 
+    ". delete-btn"
+    ". delete-btn";
 	border-bottom: 1px solid #c4c4c4;
+}
+
+.comments li div {
+	grid-area: delete-btn;
 }
 
 .comments li > * {
@@ -318,22 +369,49 @@
 	align-items: center;
 }
 
-.comments li > :first-child {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+.comments span {
+	font-size: 0.9rem;
 }
 
-.comments li > :last-child {
-	padding: 20px;
+.comments small {
+	font-size: 0.85rem;
 }
 
-.comments img {
-	width: 42px;
-	height: 42px;
-	background: gray;
-	border-radius: 50%;
+.comments li .me {
+	color: rgb(212, 28, 71);
+	font-style: italic;
 }
+
+.comments span, .comments small {
+	padding-left: 20px;
+}
+
+
+.comments button {
+	border: none;
+	background: none;
+}
+
+.comments button div {
+	width: 24px;
+	height: 24px;
+	mask-size: cover;
+
+	background-color: #242226;
+	transition: background-color ease-out 220ms;
+}
+
+.comments button:hover div,
+.comments button:focus div {
+	background-color: rgb(212, 28, 71) !important;
+}
+
+.comments button div {
+	mask-image: url('/assets/icons/delete.svg');
+	-webkit-mask-image: url('/assets/icons/delete.svg');
+}
+
+
 
 /*Empty container*/
 
@@ -420,22 +498,11 @@
 	margin-right: auto;
 }
 
-.edit-button{
-	border: 1px solid rgb(212, 28, 71);
-	background: rgb(212, 28, 71);
-	color: #fff;
-	border-radius: 8px;
-	padding: 4px 10px;
-	transition: background ease-out 220ms;
-}
 
-.edit-button:hover {
-	border: 1px solid #9d1535;
-	background: #9d1535;
-}
+
 
 .post-button,
-.cancel-button{
+.cancel-button {
 	border-radius: 10px;
 	padding: 5px 10px;
 	text-align: center;
@@ -462,7 +529,6 @@
 	width: 100%;
 	min-height: 140px;
 	margin: 50px 0px;
-	
 }
 
 .comment-container textarea {
