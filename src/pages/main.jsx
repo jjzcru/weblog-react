@@ -7,119 +7,41 @@ import { AppContext } from '../services/AppContext';
 Modal.setAppElement('#root');
 
 export function Main() {
+	const { api} = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	useEffect(() => {
+		api.getCategories().then(setCategories).catch(alert);
+	}, []);
 	return (
 		<main className={styles['home-view']}>
-			<Categories />
+			<Categories categories={categories}/>
 			<Empty message={'Please select a category'} />
 		</main>
 	);
 }
 
 export function SelectedCategory() {
-	const { api } = useContext(AppContext);
-	const [category, setCategory] = useState(null);
 	const { categoryId } = useParams();
+	const { api } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	const [category, setCategory] = useState(null);
+	const [posts, setPosts] = useState([])
+	const [isNewPostOpen, setIsNewPostOpen] = useState(false);
 
 	useEffect(() => {
 		api.getCategories()
 			.then((categories) => {
+				setCategories(categories)
 				for (const category of categories) {
 					if (category.id === categoryId) {
 						setCategory(category);
-						break;
+						return api.getPostsFromCategory(categoryId);
 					}
 				}
 			})
+			.then(setPosts)
 			.catch(alert);
 	}, [categoryId]);
-	return (
-		<main className={styles['posts-view']}>
-			<Categories />
-			<Posts category={category} />
-			<Empty message={'Please select a post'} />
-		</main>
-	);
-}
-
-export function SelectedPost() {
-	const { categoryId } = useParams();
-	const { api } = useContext(AppContext);
-	const [category, setCategory] = useState(null);
-
-	useEffect(() => {
-		api.getCategories()
-			.then((categories) => {
-				for (const category of categories) {
-					if (category.id === categoryId) {
-						setCategory(category);
-						break;
-					}
-				}
-			})
-			.catch(alert);
-	}, []);
-
-	return (
-		<main className={styles['post-view']}>
-			<Categories />
-			<Posts category={category} />
-			<Post />
-		</main>
-	);
-}
-function Categories() {
-	const { api, me } = useContext(AppContext);
-	const [categories, setCategories] = useState([]);
-	useEffect(() => {
-		api.getCategories().then(setCategories).catch(alert);
-	}, []);
-	return (
-		<section className={styles['categories']}>
-			<header>
-				<div>
-					<img />
-				</div>
-				<div>{me?.name}</div>
-				<div>
-					<button
-						onClick={() => {
-							localStorage.removeItem('token');
-							localStorage.removeItem('expiredAt');
-							window.location.href = '/';
-						}}
-					>
-						Log out
-					</button>
-				</div>
-			</header>
-			<ul>
-				{categories.map((category) => {
-					const { id, name } = category;
-					return (
-						<li key={id}>
-							<Link to={`/categories/${id}`}>{name}</Link>
-						</li>
-					);
-				})}
-			</ul>
-		</section>
-	);
-}
-
-function Posts({ category }) {
-	const { categoryId } = useParams();
-	const { api } = useContext(AppContext);
-	const [isNewPostOpen, setIsNewPostOpen] = useState(false);
-	const [posts, setPosts] = useState([]);
-	useEffect(() => {
-		if (category) {
-			api.getPostsFromCategory(categoryId).then(setPosts).catch(alert);
-		}
-	}, [category]);
-
-	if (!category) {
-		return null;
-	}
 
 	const onPostCreated = () => {
 		setIsNewPostOpen(false);
@@ -129,6 +51,94 @@ function Posts({ category }) {
 			})
 			.catch(alert);
 	};
+
+	return (
+		<main className={styles['posts-view']}>
+			<Categories categories={categories} selected={categoryId}/>
+			<Posts category={category} posts={posts} onClickCreate={() => {
+				setIsNewPostOpen(true)
+			}}/>
+			<Empty message={'Please select a post'} />
+			<NewPost
+					category={category}
+					onCreate={onPostCreated}
+					isOpen={isNewPostOpen}
+					onClose={() => {
+						setIsNewPostOpen(false);
+					}}
+				/>
+		</main>
+	);
+}
+
+export function SelectedPost() {
+	const { categoryId } = useParams();
+	const { api } = useContext(AppContext);
+	const [category, setCategory] = useState(null);
+	const [posts, setPosts] = useState([]);
+
+	useEffect(() => {
+		api.getCategories()
+			.then((categories) => {
+				for (const category of categories) {
+					if (category.id === categoryId) {
+						setCategory(category)
+						return api.getPostsFromCategory(categoryId)
+					}
+				}
+			})
+			.then((response) => {
+				if(response) {
+					setPosts(posts);
+				}
+			})
+			.catch(alert);
+	}, []);
+
+	return (
+		<main className={styles['post-view']}>
+			<Categories />
+			<Posts category={category} posts={posts} />
+			<Post />
+		</main>
+	);
+}
+function Categories({selected, categories}) {
+	const { me } = useContext(AppContext);
+	return (
+		<section className={styles['categories']}>
+			<header>
+				<div>{me?.name}</div>
+				<div>
+					<button
+						onClick={() => {
+							localStorage.removeItem('token');
+							localStorage.removeItem('expiredAt');
+							window.location.href = '/';
+						}}
+					>
+						<div/>
+					</button>
+				</div>
+			</header>
+			<ul>
+				{categories.map((category) => {
+					const { id, name } = category;
+					return (
+						<li key={id} className={selected === id ? styles['selected'] : ''}>
+							<Link to={`/categories/${id}`}>{name}</Link>
+						</li>
+					);
+				})}
+			</ul>
+		</section>
+	);
+}
+
+function Posts({ category, posts, onClickCreate }) {
+	if (!category) {
+		return null;
+	}
 
 	const { id, name } = category;
 	let component = (
@@ -153,30 +163,16 @@ function Posts({ category }) {
 	return (
 		<section className={styles['posts']}>
 			<header>
-				<div>
-					<img />
-				</div>
+				<div></div>
 				<div>{name}</div>
 				<div>
 					<button
-						onClick={() => {
-							setIsNewPostOpen(true);
-						}}
+						onClick={onClickCreate}
 					>
-						Add{' '}
+						<div/>
 					</button>
 				</div>
 			</header>
-			<div>
-				<NewPost
-					category={category}
-					onCreate={onPostCreated}
-					isOpen={isNewPostOpen}
-					onClose={() => {
-						setIsNewPostOpen(false);
-					}}
-				/>
-			</div>
 			{component}
 		</section>
 	);
