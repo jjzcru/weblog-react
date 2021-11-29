@@ -3,122 +3,140 @@ import { Link, useParams } from 'react-router-dom';
 import styles from './main.module.css';
 import Modal from 'react-modal';
 import { AppContext } from '../services/AppContext';
+import { Redirect } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
 export function Main() {
+	const { api } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	useEffect(() => {
+		api.getCategories().then(setCategories).catch(alert);
+	}, []);
 	return (
 		<main className={styles['home-view']}>
-			<Categories />
+			<Categories categories={categories} />
 			<Empty message={'Please select a category'} />
 		</main>
 	);
 }
 
 export function SelectedCategory() {
-	const { api } = useContext(AppContext);
-	const [category, setCategory] = useState(null);
 	const { categoryId } = useParams();
+	const { api } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
+	const [category, setCategory] = useState(null);
+	const [posts, setPosts] = useState([]);
+	const [isNewPostOpen, setIsNewPostOpen] = useState(false);
 
 	useEffect(() => {
 		api.getCategories()
 			.then((categories) => {
+				setCategories(categories);
 				for (const category of categories) {
 					if (category.id === categoryId) {
 						setCategory(category);
-						break;
+						return api.getPostsFromCategory(categoryId);
 					}
 				}
 			})
+			.then(setPosts)
 			.catch(alert);
 	}, [categoryId]);
+
+	useEffect(() => {
+		for (const category of categories) {
+			if (category.id === categoryId) {
+				api.getPostsFromCategory(categoryId)
+					.then(setPosts)
+					.catch(alert);
+				break;
+			}
+		}
+	}, [categoryId]);
+
+	const onPostCreated = () => {
+		setIsNewPostOpen(false);
+		api.getPostsFromCategory(categoryId)
+			.then((response) => {
+				setPosts(response);
+			})
+			.catch(alert);
+	};
+
 	return (
 		<main className={styles['posts-view']}>
-			<Categories />
-			<Posts category={category} />
+			<Categories categories={categories} selected={categoryId} />
+			<Posts
+				category={category}
+				posts={posts}
+				onClickCreate={() => {
+					setIsNewPostOpen(true);
+				}}
+			/>
 			<Empty message={'Please select a post'} />
+			<NewPost
+				category={category}
+				onCreate={onPostCreated}
+				isOpen={isNewPostOpen}
+				onClose={() => {
+					setIsNewPostOpen(false);
+				}}
+			/>
 		</main>
 	);
 }
 
 export function SelectedPost() {
-	const { categoryId } = useParams();
+	const { categoryId, postId } = useParams();
 	const { api } = useContext(AppContext);
+	const [categories, setCategories] = useState([]);
 	const [category, setCategory] = useState(null);
+	const [posts, setPosts] = useState([]);
+	const [comment, setComment] = useState('');
+	const [post, setPost] = useState(null);
+	const [isNewPostOpen, setIsNewPostOpen] = useState(false);
+	const [isEditPostOpen, setIsEditPostOpen] = useState(false);
+	const [redirect, setRedirect] = useState('');
 
 	useEffect(() => {
 		api.getCategories()
 			.then((categories) => {
+				setCategories(categories);
 				for (const category of categories) {
 					if (category.id === categoryId) {
 						setCategory(category);
-						break;
+						return api.getPostsFromCategory(categoryId);
+					}
+				}
+			})
+			.then((posts) => {
+				if (posts) {
+					setPosts(posts);
+					for (const post of posts) {
+						if (post.id === postId) {
+							setPost(post);
+							setComment('');
+							break;
+						}
 					}
 				}
 			})
 			.catch(alert);
 	}, []);
 
-	return (
-		<main className={styles['post-view']}>
-			<Categories />
-			<Posts category={category} />
-			<Post />
-		</main>
-	);
-}
-function Categories() {
-	const { api, me } = useContext(AppContext);
-	const [categories, setCategories] = useState([]);
 	useEffect(() => {
-		api.getCategories().then(setCategories).catch(alert);
-	}, []);
-	return (
-		<section className={styles['categories']}>
-			<header>
-				<div>
-					<img />
-				</div>
-				<div>{me?.name}</div>
-				<div>
-					<button
-						onClick={() => {
-							localStorage.removeItem('token');
-							localStorage.removeItem('expiredAt');
-							window.location.href = '/';
-						}}
-					>
-						Log out
-					</button>
-				</div>
-			</header>
-			<ul>
-				{categories.map((category) => {
-					const { id, name } = category;
-					return (
-						<li key={id}>
-							<Link to={`/categories/${id}`}>{name}</Link>
-						</li>
-					);
-				})}
-			</ul>
-		</section>
-	);
-}
-
-function Posts({ category }) {
-	const { categoryId } = useParams();
-	const { api } = useContext(AppContext);
-	const [isNewPostOpen, setIsNewPostOpen] = useState(false);
-	const [posts, setPosts] = useState([]);
-	useEffect(() => {
-		if (category) {
-			api.getPostsFromCategory(categoryId).then(setPosts).catch(alert);
+		for (const post of posts) {
+			if (post.id === postId) {
+				setPost(post);
+				setComment('');
+				break;
+			}
 		}
-	}, [category]);
+	}, [postId]);
 
-	if (!category) {
-		return null;
+	if (redirect) {
+		return <Redirect to={redirect} />;
 	}
 
 	const onPostCreated = () => {
@@ -130,16 +148,158 @@ function Posts({ category }) {
 			.catch(alert);
 	};
 
+	const onClickEditPost = () => {
+		setPost(post);
+		setIsEditPostOpen(true);
+	};
+
+	const onSubmitComment = (e) => {
+		e.preventDefault();
+		api.addComment({ postId, content: comment })
+			.then(() => api.getPost(postId))
+			.then((post) => {
+				setPost(post);
+				setComment('');
+			})
+			.catch(alert);
+	};
+
+	const onDeleteComment = (id) => {
+		api.deleteComment(id)
+			.then(() => api.getPost(postId))
+			.then((post) => {
+				setPost(post);
+			})
+			.catch(alert);
+	};
+
+	const onClickDeletePost = async () => {
+		if (confirm(`Are you sure you want to delete: "${post.title}"`)) {
+			api.deletePost(post.id)
+				.then(() => {
+					setRedirect(`/categories/${categoryId}`);
+				})
+				.catch(alert);
+		}
+	};
+
+	if (!post) {
+		return null;
+	}
+
+	const onCommentChange = (comment) => {
+		setComment(comment);
+	};
+
+	return (
+		<main className={styles['post-view']}>
+			<Categories categories={categories} selected={categoryId} />
+			<Posts
+				onClickCreate={() => {
+					setIsNewPostOpen(true);
+				}}
+				selected={postId}
+				category={category}
+				posts={posts}
+			/>
+			<Post
+				post={post}
+				comment={comment}
+				onSubmitComment={onSubmitComment}
+				onClickEditPost={onClickEditPost}
+				onClickDeletePost={onClickDeletePost}
+				onClickDeleteComment={(id) => {
+					onDeleteComment(id);
+				}}
+				onCommentChange={onCommentChange}
+			/>
+			<NewPost
+				category={category}
+				onCreate={onPostCreated}
+				isOpen={isNewPostOpen}
+				onClose={() => {
+					setIsNewPostOpen(false);
+				}}
+			/>
+			<EditPost
+				isOpen={isEditPostOpen}
+				post={post}
+				onClose={() => {
+					setIsEditPostOpen(false);
+				}}
+				onComplete={() => {
+					api.getPost(postId)
+						.then((post) => {
+							console.log(`Updated post`);
+							console.log(post);
+							setPost(post);
+							setIsEditPostOpen(false);
+							return api.getPostsFromCategory(categoryId);
+						})
+						.then(setPosts)
+						.catch(alert);
+				}}
+			/>
+		</main>
+	);
+}
+function Categories({ selected, categories }) {
+	const { me } = useContext(AppContext);
+	return (
+		<section className={styles['categories']}>
+			<header>
+				<div>{me?.name}</div>
+				<div>
+					<button
+						onClick={() => {
+							localStorage.removeItem('token');
+							localStorage.removeItem('expiredAt');
+							window.location.href = '/';
+						}}
+					>
+						<div />
+					</button>
+				</div>
+			</header>
+			<ul>
+				{categories.map((category) => {
+					const { id, name } = category;
+					return (
+						<li
+							key={id}
+							className={
+								selected === id ? styles['selected'] : ''
+							}
+						>
+							<Link to={`/categories/${id}`}>{name}</Link>
+						</li>
+					);
+				})}
+			</ul>
+		</section>
+	);
+}
+
+function Posts({ category, posts, onClickCreate, selected }) {
+	if (!category) {
+		return null;
+	}
+
 	const { id, name } = category;
 	let component = (
 		<ul>
 			{posts.map((post, i) => {
-				const { title, description } = post;
+				const { title, content } = post;
 				return (
-					<li key={post.id}>
+					<li
+						key={post.id}
+						className={
+							selected === post.id ? styles['selected'] : ''
+						}
+					>
 						<Link to={`/categories/${id}/${post.id}`}>
 							<h3>{title}</h3>
-							<p>{description}</p>
+							<p>{content}</p>
 						</Link>
 					</li>
 				);
@@ -153,30 +313,14 @@ function Posts({ category }) {
 	return (
 		<section className={styles['posts']}>
 			<header>
-				<div>
-					<img />
-				</div>
+				<div></div>
 				<div>{name}</div>
 				<div>
-					<button
-						onClick={() => {
-							setIsNewPostOpen(true);
-						}}
-					>
-						Add{' '}
+					<button onClick={onClickCreate}>
+						<div />
 					</button>
 				</div>
 			</header>
-			<div>
-				<NewPost
-					category={category}
-					onCreate={onPostCreated}
-					isOpen={isNewPostOpen}
-					onClose={() => {
-						setIsNewPostOpen(false);
-					}}
-				/>
-			</div>
 			{component}
 		</section>
 	);
@@ -188,11 +332,9 @@ function NewPost({ onClose, isOpen, onCreate, category }) {
 	const [content, setContent] = useState('');
 	const onSubmit = (e) => {
 		e.preventDefault();
-		console.log(`I add a new post`);
-		console.log({
-			title,
-			content,
-		});
+		if (!confirm('Are you sure you want to create a new post')) {
+			return;
+		}
 		api.createPost({
 			title,
 			description: '',
@@ -259,55 +401,16 @@ function EmptyPosts() {
 	);
 }
 
-function Post() {
-	const { categoryId, postId } = useParams();
-	const { api, me } = useContext(AppContext);
-	const [comment, setComment] = useState('');
-	const [post, setPost] = useState(null);
-	const [isEditPostOpen, setIsEditPostOpen] = useState(false);
-
-	useEffect(() => {
-		api.getPost(postId)
-			.then((post) => {
-				setPost(post);
-				setComment('');
-			})
-			.catch(alert);
-	}, [postId]);
-
-	const onClickEditPost = () => {
-		setIsEditPostOpen(true);
-	};
-
-	const onSubmitComment = (e) => {
-		e.preventDefault();
-		api.addComment({ postId, content: comment })
-			.then(() => api.getPost(postId))
-			.then((post) => {
-				setPost(post);
-				setComment('');
-			})
-			.catch(alert);
-	};
-
-	const onDeleteComment = (id) => {
-		api.deleteComment(id)
-			.then(() => api.getPost(postId))
-			.then((post) => {
-				setPost(post);
-			})
-			.catch(alert);
-	};
-
-	const onClickDelete = async () => {
-		if (confirm(`Are you sure you want to delete: "${post.title}"`)) {
-			api.deletePost(post.id)
-				.then(() => {
-					window.location.href = `/categories/${categoryId}`;
-				})
-				.catch(alert);
-		}
-	};
+function Post({
+	post,
+	comment,
+	onSubmitComment,
+	onClickEditPost,
+	onClickDeletePost,
+	onClickDeleteComment,
+	onCommentChange,
+}) {
+	const { me } = useContext(AppContext);
 
 	if (!post) {
 		return null;
@@ -319,13 +422,13 @@ function Post() {
 	let deleteButton = null;
 	if (me && user && me?.id === user?.id) {
 		editButton = (
-			<button onClick={onClickEditPost} className={styles['edit-button']}>
-				Edit
+			<button onClick={onClickEditPost} className={styles['edit']}>
+				<div />
 			</button>
 		);
 		deleteButton = (
-			<button onClick={onClickDelete} className={styles['edit-button']}>
-				Delete
+			<button onClick={onClickDeletePost} className={styles['delete']}>
+				<div />
 			</button>
 		);
 	}
@@ -334,12 +437,14 @@ function Post() {
 		<>
 			<section className={styles['post']}>
 				<header>
-					<div>{deleteButton}</div>
+					<div></div>
 					<div>{title}</div>
-					<div>{editButton}</div>
+					<div>
+						{deleteButton}
+						{editButton}
+					</div>
 				</header>
 				<section>
-					<h2>{title}</h2>
 					{description ? (
 						<div>
 							<small>{description}</small>
@@ -353,7 +458,7 @@ function Post() {
 						<textarea
 							value={comment}
 							onChange={(e) => {
-								setComment(e.target.value);
+								onCommentChange(e.target.value);
 							}}
 							placeholder={'Comment'}
 						/>
@@ -364,49 +469,41 @@ function Post() {
 				</section>
 				<ul className={styles['comments']}>
 					{comments && comments.length
-						? comments.map((comment, i) => {
-								const { content, id } = comment;
-								let deleteCommentBtn = null;
-								if (me.id === comment.user.id) {
-									deleteCommentBtn = (
-										<button
-											onClick={() => {
-												onDeleteComment(id);
-											}}
-										>
-											Delete
-										</button>
-									);
-								}
-								return (
-									<li key={i}>
-										<div>
-											<img />
-										</div>
-										<span>{content}</span>
-										<div>{deleteCommentBtn}</div>
-									</li>
-								);
-						  })
+						? comments.map((comment, i) => (
+								<Comment
+									key={i}
+									comment={comment}
+									onDelete={onClickDeleteComment}
+								/>
+						  ))
 						: null}
 				</ul>
 			</section>
-			<EditPost
-				isOpen={isEditPostOpen}
-				post={post}
-				onClose={() => {
-					setIsEditPostOpen(false);
-				}}
-				onComplete={() => {
-					api.getPost(postId)
-						.then((post) => {
-							setPost(post);
-							setIsEditPostOpen(false);
-						})
-						.catch(alert);
-				}}
-			/>
 		</>
+	);
+}
+
+function Comment({ comment, onDelete }) {
+	const { me } = useContext(AppContext);
+	const { content, id, user } = comment;
+	let deleteCommentBtn = null;
+	if (me.id === user.id) {
+		deleteCommentBtn = (
+			<button
+				onClick={() => {
+					onDelete(id);
+				}}
+			>
+				<div />
+			</button>
+		);
+	}
+	return (
+		<li>
+			<span>{content}</span>
+			<small className={me.id === user.id ? styles['me'] : ''}>{user.name}</small>
+			<div>{deleteCommentBtn}</div>
+		</li>
 	);
 }
 
@@ -414,6 +511,10 @@ function EditPost({ post, isOpen, onClose, onComplete }) {
 	const { api } = useContext(AppContext);
 	const [title, setTitle] = useState(post.title);
 	const [content, setContent] = useState(post.content);
+	useEffect(() => {
+		setTitle(post.title);
+		setContent(post.content);
+	}, [post.id]);
 	const onSubmit = (e) => {
 		e.preventDefault();
 		api.updatePost({
