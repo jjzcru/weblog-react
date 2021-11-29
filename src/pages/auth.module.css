@@ -85,8 +85,65 @@
 	border: 1px solid #eaeaea;
 	border-radius: 4px;
 	height: 52px;
+	
+}
+
+.signup-password {
+	position: relative;
+	width: 100%;
 	margin: 20px auto;
 }
+
+.signup-password input {
+	position: relative;
+	margin: 0px auto;
+}
+
+.signup-password button{
+	position: absolute;
+	/*right: 10;*/
+	right: 10;
+	margin-top: 16px;
+	background: none;
+	border: none;
+	height: unset;
+	width: unset;
+}
+
+.signup-password button div {
+	width: 24px;
+	height: 24px;
+	mask-size: cover;
+
+	background-color: #3d3d3d;
+	transition: background-color ease-out 220ms;
+}
+
+.submit-btn {
+	background: #23a6d5;
+	transition: opacity ease-out 220ms;
+	color: #fff;
+}
+
+.submit-btn:disabled {
+	opacity: 0.5;
+}
+
+.signup-password button:hover div,
+.signup-password button:focus div {
+	background-color: #3d3d3d;
+}
+
+.signup-password button div {
+	mask-image: url('/assets/icons/eye.svg');
+	-webkit-mask-image: url('/assets/icons/eye.svg');
+}
+
+.signup-password button .not-show {
+	mask-image: url('/assets/icons/eye-off.svg');
+	-webkit-mask-image: url('/assets/icons/eye-off.svg');
+}
+
 
 @media screen and (orientation:landscape) and (min-width: 968px) {
 	.view {

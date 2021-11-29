@@ -12,14 +12,16 @@ export class Api {
 		this.token = token;
 	};
 
-	signUp = async ({ email, password }) => {
-		const url = `${this.host}/login`;
+	signUp = async ({ email, password, name }) => {
+		const url = `${this.host}/signup`;
 		try {
 			const { data } = await axios.post(url, {
 				email,
 				password,
+				name
 			});
 			return {
+				id: data.id,
 				success: true,
 			};
 		} catch (e) {
