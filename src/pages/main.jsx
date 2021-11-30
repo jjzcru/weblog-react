@@ -438,7 +438,7 @@ function Post({
 			<section className={styles['post']}>
 				<header>
 					<div></div>
-					<div>{title}</div>
+					<div aria-label={title}>{title}</div>
 					<div>
 						{deleteButton}
 						{editButton}
@@ -450,7 +450,11 @@ function Post({
 							<small>{description}</small>
 						</div>
 					) : null}
-					<p dangerouslySetInnerHTML={{ __html: content }}></p>
+					<p>{content}</p>
+					<div>
+					<small>{user.name}</small>
+					</div>
+					
 					<form
 						onSubmit={onSubmitComment}
 						className={styles['comment-container']}
@@ -460,10 +464,10 @@ function Post({
 							onChange={(e) => {
 								onCommentChange(e.target.value);
 							}}
-							placeholder={'Comment'}
+							placeholder={'Write your comment....'}
 						/>
 						<div>
-							<button>Send</button>
+							<button>Comment</button>
 						</div>
 					</form>
 				</section>

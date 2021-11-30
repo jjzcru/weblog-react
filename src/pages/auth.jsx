@@ -110,7 +110,7 @@ export function SignUp() {
 			password,
 		})
 			.then(() => {
-				alert('Account created succesfully, please login');
+				alert('Account created successfully, please login');
 				setRedirect('/signin');
 			})
 			.catch((e) => {
