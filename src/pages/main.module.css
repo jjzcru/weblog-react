@@ -101,7 +101,7 @@
 }
 
 .categories li.selected a {
-	background: rgb(212, 28, 71, 0.8);
+	background: rgb(35, 166, 213, 0.8);
 	color: #fff;
 }
 
@@ -187,11 +187,10 @@
 	transition: color ease-out 220ms;
 	padding: 14px;
 	position: relative;
-	
 }
 
 .posts li.selected a {
-	color: rgb(212, 28, 71);
+	color: rgb(35, 166, 213);
 }
 
 .posts li h3 {
@@ -217,7 +216,7 @@
 }
 
 .posts li:hover {
-	color: rgb(212, 28, 71, 0.7);
+	color: rgb(35, 166, 213, 0.7);
 }
 
 .posts button {
@@ -236,7 +235,7 @@
 
 .posts button:hover div,
 .posts button:focus div {
-	background-color: rgb(212, 28, 71);
+	background-color: rgb(35, 166, 213);
 }
 
 .posts button div {
@@ -265,8 +264,8 @@
 	justify-content: center;
 	align-items: center;
 	white-space: nowrap;
-        overflow: hidden;
-        text-overflow: clip;
+	overflow: hidden;
+	text-overflow: clip;
 }
 
 .post header > :last-child {
@@ -299,8 +298,8 @@
 }
 
 .post section > p {
-	min-height: 200px;
-	max-height: 250px;
+	min-height: 150px;
+	max-height: 200px;
 	margin-top: 25px;
 	margin-bottom: 20px;
 	overflow: auto;
@@ -348,12 +347,12 @@
 
 .post button:hover div,
 .post button:focus div {
-	background-color: rgb(212, 28, 71);
+	background-color: rgb(35, 166, 213);
 }
 
 .post button:last-of-type {
 	margin-left: 20px;
-} 
+}
 
 .post button.edit div {
 	mask-image: url('/assets/icons/edit.svg');
@@ -363,6 +362,11 @@
 .post button.delete div {
 	mask-image: url('/assets/icons/trash-2.svg');
 	-webkit-mask-image: url('/assets/icons/trash-2.svg');
+}
+
+.post .delete:hover div,
+.post .delete:focus div {
+	background-color: rgb(255, 69, 58) !important;
 }
 
 .comments {
@@ -380,12 +384,12 @@
 	background: #fff;
 	display: grid;
 	grid-auto-columns: 1fr;
-	grid-template-columns: 1fr 100px; 
-	grid-template-rows: 1fr 1fr; 
+	grid-template-columns: 1fr 100px;
+	grid-template-rows: 1fr 1fr;
 	gap: 0px 0px;
-	grid-template-areas: 
-    ". delete-btn"
-    ". delete-btn";
+	grid-template-areas:
+		'. delete-btn'
+		'. delete-btn';
 	border-bottom: 1px solid #c4c4c4;
 }
 
@@ -407,14 +411,14 @@
 }
 
 .comments li .me {
-	color: rgb(212, 28, 71);
+	color: rgb(35, 166, 213);
 	font-style: italic;
 }
 
-.comments span, .comments small {
+.comments span,
+.comments small {
 	padding-left: 20px;
 }
-
 
 .comments button {
 	border: none;
@@ -432,15 +436,13 @@
 
 .comments button:hover div,
 .comments button:focus div {
-	background-color: rgb(212, 28, 71) !important;
+	background-color: rgb(255, 69, 58) !important;
 }
 
 .comments button div {
 	mask-image: url('/assets/icons/delete.svg');
 	-webkit-mask-image: url('/assets/icons/delete.svg');
 }
-
-
 
 /*Empty container*/
 
@@ -514,7 +516,7 @@
 }
 
 .post-button {
-	background-color: #9d1535;
+	background-color: rgb(35, 166, 213);
 	color: white;
 	margin-left: auto;
 	margin-right: auto;
@@ -526,9 +528,6 @@
 	margin-left: auto;
 	margin-right: auto;
 }
-
-
-
 
 .post-button,
 .cancel-button {
@@ -556,12 +555,10 @@
 
 .comment-container {
 	width: 100%;
-	min-height: 140px;
 	margin: 50px 0px;
 }
 
 .comment-container textarea {
-	min-height: 140px;
 	width: 100%;
 	border-radius: 12px;
 	padding: 10px 10px;
@@ -575,8 +572,8 @@
 }
 
 .comment-container button {
-	border: 1px solid rgb(212, 28, 71);
-	background: rgb(212, 28, 71);
+	border: 1px solid rgb(35, 166, 213);
+	background: rgb(35, 166, 213);
 	color: #fff;
 	border-radius: 8px;
 	padding: 4px 10px;
@@ -584,6 +581,6 @@
 }
 
 .comment-container button:hover {
-	border: 1px solid #9d1535;
-	background: #9d1535;
+	border: 1px solid rgb(35, 166, 213);
+	background: rgb(35, 166, 213);
 }
