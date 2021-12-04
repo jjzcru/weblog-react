@@ -6,6 +6,7 @@ import ReloadPrompt from './ReloadPrompt';
 
 import { Main, SelectedCategory, SelectedPost } from './pages/main';
 import { Home } from './pages/home';
+import { Error } from './pages/error';
 import { SignIn, SignUp } from './pages/auth';
 import { Api } from './services/Api';
 
@@ -64,6 +65,7 @@ export class App extends Component {
 								path="/categories/:categoryId/:postId"
 								component={SelectedPost}
 							/>
+							<Route exact path="*" component={Error} />
 						</Switch>
 					</Router>
 				</main>
