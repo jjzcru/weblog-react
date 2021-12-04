@@ -249,8 +249,9 @@ function Categories({ selected, categories }) {
 		<section className={styles['categories']}>
 			<header>
 				<div>{me?.name}</div>
-				<div>
+				<div><label htmlFor="logoutButton" />
 					<button
+						id="logoutButton"
 						onClick={() => {
 							localStorage.removeItem('token');
 							localStorage.removeItem('expiredAt');
@@ -298,6 +299,7 @@ function Posts({ category, posts, onClickCreate, selected }) {
 						}
 					>
 						<Link to={`/categories/${id}/${post.id}`}>
+							<h1></h1><h2></h2>
 							<h3>{title}</h3>
 							<p>{content}</p>
 						</Link>
@@ -316,7 +318,8 @@ function Posts({ category, posts, onClickCreate, selected }) {
 				<div></div>
 				<div>{name}</div>
 				<div>
-					<button onClick={onClickCreate}>
+					<label htmlFor="createPost" />
+					<button id="createPost" onClick={onClickCreate}>
 						<div />
 					</button>
 				</div>
@@ -380,11 +383,14 @@ function NewPost({ onClose, isOpen, onCreate, category }) {
 				/>
 				<br />
 				<br />
-				<button className={styles['post-button']}>Post</button>
+				<label htmlFor="submitPost" />
+				<button id="submitPost" className={styles['post-button']}>Post</button>
 			</form>
+			<label htmlFor="cancelPost" />
 			<button
 				type={'button'}
 				onClick={onClose}
+				id="cancelPost"
 				className={styles['cancel-button']}
 			>
 				Cancel
@@ -422,14 +428,20 @@ function Post({
 	let deleteButton = null;
 	if (me && user && me?.id === user?.id) {
 		editButton = (
-			<button onClick={onClickEditPost} className={styles['edit']}>
-				<div />
-			</button>
+			<div>
+				<label htmlFor="editPostButton" />
+				<button id="editPostButton" onClick={onClickEditPost} className={styles['edit']}>
+					<div />
+				</button>
+			</div>
 		);
 		deleteButton = (
-			<button onClick={onClickDeletePost} className={styles['delete']}>
-				<div />
-			</button>
+			<div>
+				<label htmlFor="deletePostButton" />
+				<button id="deletePostButton" onClick={onClickDeletePost} className={styles['delete']}>
+					<div />
+				</button>
+			</div>
 		);
 	}
 
@@ -459,8 +471,10 @@ function Post({
 						onSubmit={onSubmitComment}
 						className={styles['comment-container']}
 					>
+						<label htmlFor="commentArea" />
 						<textarea
 							value={comment}
+							id="commentArea"
 							onChange={(e) => {
 								onCommentChange(e.target.value);
 							}}
@@ -493,13 +507,17 @@ function Comment({ comment, onDelete }) {
 	let deleteCommentBtn = null;
 	if (me.id === user.id) {
 		deleteCommentBtn = (
-			<button
-				onClick={() => {
-					onDelete(id);
-				}}
-			>
-				<div />
-			</button>
+			<div>
+				<label htmlFor="deleteComment" />
+				<button
+					id="deleteComment"
+					onClick={() => {
+						onDelete(id);
+					}}
+				>
+					<div />
+				</button>
+			</div>
 		);
 	}
 	return (

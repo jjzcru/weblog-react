@@ -41,7 +41,7 @@ export function Home() {
                                 <h2 className={styles.centered}>Express yourself in a blog where other members of the community can comment on your post and connect with you</h2>
                                 </Col>
                             <Col sm={6} md={4} lg={3}>
-                                <img src="https://freesvg.org/img/cayon.png" className={styles.writing} />
+                                <img src="https://freesvg.org/img/cayon.png" className={styles.writing} alt="writing" />
                             </Col>
                         </Row>
                     </Container>
@@ -52,7 +52,7 @@ export function Home() {
                     <Container>
                         <Row className="align-items-center">
                             <Col sm={6} md={4} lg={3}>
-                                <img src="https://freesvg.org/img/Blog-icon.png" className={styles.writing} />
+                                <img src="https://freesvg.org/img/Blog-icon.png" className={styles.writing} alt="read" />
                             </Col>
                             <Col sm={6} md={4} lg={9}>
                                 <h1 className={styles.centered}>Read</h1>
@@ -71,7 +71,7 @@ export function Home() {
                                 <h2 className={styles.centered}>Exchange research and other knowledge with your peers to foster education outside of the classroom</h2>
                             </Col>
                             <Col sm={6} md={4} lg={3}>
-                                <img src="https://freesvg.org/img/afaulconbridge-Lightbulb-OnOff-1.png" className={styles.writing} />
+                                <img src="https://freesvg.org/img/afaulconbridge-Lightbulb-OnOff-1.png" className={styles.writing} alt="learn" />
                             </Col>
                         </Row>
                     </Container>

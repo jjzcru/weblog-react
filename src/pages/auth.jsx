@@ -40,9 +40,10 @@ export function SignIn() {
 		<div className={styles['view']}>
 			<form onSubmit={onSubmit}>
 				<picture>
-					<img />
+					<img alt="signin" />
 				</picture>
 				<section>
+					<label htmlFor="signinEmail" />
 					<input
 						placeholder="Email"
 						type="email"
@@ -50,7 +51,9 @@ export function SignIn() {
 						onChange={(e) => {
 							setEmail(e.target.value);
 						}}
+						id="signinEmail"
 					/>
+					<label htmlFor="signinPassword" />
 					<input
 						placeholder="Password"
 						type="password"
@@ -58,13 +61,14 @@ export function SignIn() {
 						onChange={(e) => {
 							setPassword(e.target.value);
 						}}
+						id="signinPassword"
 					/>
 					<p>
 						Need an account? <Link to={'/signup'}>Sign Up</Link>
 					</p>
 				</section>
 				<section>
-					<button disabled={!email || !password || isLoading}>
+					<button className={styles['submit-btn']} disabled={!email || !password || isLoading}>
 						Submit
 					</button>
 				</section>
@@ -126,9 +130,10 @@ export function SignUp() {
 		<div className={styles['view']}>
 			<form onSubmit={onSubmit}>
 				<picture>
-					<img />
+					<img alt="signup" />
 				</picture>
 				<section>
+					<label htmlFor="signupEmail" />
 					<input
 						placeholder="Email"
 						onChange={(e) => {
@@ -136,7 +141,9 @@ export function SignUp() {
 						}}
 						value={email}
 						type="email"
+						id="signupEmail"
 					/>
+					<label htmlFor="firstName" />
 					<input
 						placeholder="First Name"
 						onChange={(e) => {
@@ -144,7 +151,9 @@ export function SignUp() {
 						}}
 						value={firstName}
 						type="text"
+						id="firstName"
 					/>
+					<label htmlFor="lastName" />
 					<input
 						placeholder="Last Name"
 						value={lastName}
@@ -152,7 +161,9 @@ export function SignUp() {
 							setLastName(e.target.value);
 						}}
 						type="text"
+						id="lastName"
 					/>
+					<label htmlFor="signupPassword" />
 					<div className={styles['signup-password']}>
 						<input
 							value={password}
@@ -161,8 +172,10 @@ export function SignUp() {
 							}}
 							placeholder="Password"
 							type={showPassword ? 'text' : 'password'}
+							id="signupPassword"
 						></input>
-						<button type={'button'} onClick={viewPassword}>
+						<label htmlFor="viewPassword" />
+						<button id="viewPassword" type={'button'} onClick={viewPassword}>
 							<div
 								className={
 									showPassword ? styles['not-show'] : ''
